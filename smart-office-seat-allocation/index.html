@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SeatWise | Smart Office Allocation</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">S</div><div><b>SeatWise</b><small>WORKSPACE MANAGER</small></div></div>
+      <div class="workspace-label">WORKSPACE</div>
+      <button class="nav-link active" data-page="overview"><span>▦</span> Overview</button>
+      <button class="nav-link" data-page="seats"><span>▤</span> Seat allocation</button>
+      <button class="nav-link" data-page="bookings"><span>◷</span> My bookings</button>
+      <div class="sidebar-bottom"><div class="help-card"><b>Need a workspace?</b><p>Find an available seat and reserve it in seconds.</p></div><div class="profile-mini"><div class="avatar" id="sideAvatar">D</div><div><b id="sideName">Guest User</b><small id="sideEmail">Demo account</small></div></div></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div><span class="eyebrow">MONDAY — SMART WORKSPACE</span><h1 id="pageTitle">Overview</h1></div><div class="top-actions"><span class="live-pill"><i></i> System online</span><button class="user-chip" id="userButton"><span class="avatar small" id="topAvatar">D</span><span id="topName">Guest User</span>⌄</button></div></header>
+
+      <section id="overviewPage" class="page">
+        <div class="welcome"><div><span class="eyebrow light">YOUR WORKSPACE AT A GLANCE</span><h2>Work better, <span id="welcomeName">Dhruv</span>.</h2><p>Book a desk that fits your day. Your workspace, organised.</p></div><button class="primary-btn" id="findSeatBtn">＋ Find a seat</button></div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-icon purple">▤</div><span>All seats</span><strong id="totalSeats">12</strong><small>Across all work zones</small></article>
+          <article class="stat-card"><div class="stat-icon green">✓</div><span>Available now</span><strong id="availableSeats">—</strong><small>Ready to be reserved</small></article>
+          <article class="stat-card"><div class="stat-icon orange">◷</div><span>My bookings</span><strong id="myBookingCount">0</strong><small>Active reservations</small></article>
+          <article class="stat-card"><div class="stat-icon blue">⌂</div><span>Work zones</span><strong id="zoneCount">3</strong><small>Choose your environment</small></article>
+        </div>
+        <div class="section-heading"><div><span class="eyebrow">QUICK ACCESS</span><h3>Explore work zones</h3></div><button class="text-btn" data-goto="seats">View all seats →</button></div>
+        <div class="zone-grid" id="zoneCards"></div>
+        <div class="section-heading booking-heading"><div><span class="eyebrow">UPCOMING</span><h3>Your next booking</h3></div><button class="text-btn" data-goto="bookings">All bookings →</button></div>
+        <div class="booking-preview" id="nextBooking"><div class="empty-state">No upcoming bookings yet. Reserve a seat to see it here.</div></div>
+      </section>
+
+      <section id="seatsPage" class="page hidden">
+        <div class="page-intro"><div><h2>Find your perfect spot</h2><p>Choose a zone, check availability and reserve your seat.</p></div><span class="date-label" id="todayLabel"></span></div>
+        <div class="filter-bar"><label>Work zone<select id="zoneFilter"><option value="all">All zones</option></select></label><label>Seat type<select id="typeFilter"><option value="all">All types</option><option>Standard</option><option>Window</option><option>Quiet</option><option>Standing</option></select></label><label class="search-label">Search<input id="seatSearch" placeholder="Search seat number..." /></label></div>
+        <div class="seat-legend"><span><i class="legend-dot available"></i> Available</span><span><i class="legend-dot booked"></i> Booked</span><span><i class="legend-dot selected"></i> Selected</span></div>
+        <div id="seatGrid" class="seat-grid"></div>
+      </section>
+
+      <section id="bookingsPage" class="page hidden">
+        <div class="page-intro"><div><h2>My bookings</h2><p>Keep track of your workspace reservations.</p></div><button class="primary-btn" id="bookAnotherBtn">＋ New booking</button></div>
+        <div class="table-card"><div class="table-top"><b>Reservation history</b><span class="count-pill" id="bookingTotal">0 reservations</span></div><div class="table-wrap"><table><thead><tr><th>SEAT</th><th>ZONE</th><th>DATE</th><th>TIME</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="bookingRows"></tbody></table></div><div id="emptyBookings" class="empty-state">You have no bookings. Start by finding an available seat.</div></div>
+      </section>
+      <footer>SeatWise · DBMS Mini Project · Smart Office Seat & Co-working Space Allocation System</footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="bookingModal">
+    <div class="modal">
+      <button class="modal-close" id="closeModal">×</button>
+      <span class="eyebrow">RESERVE YOUR WORKSPACE</span><h2>Confirm your seat</h2><p class="modal-sub">Enter your details and choose your preferred time.</p>
+      <div class="selected-seat" id="selectedSeatLabel">Seat —</div>
+      <form id="bookingForm">
+        <label>Your full name<input id="userFullName" required placeholder="e.g. Dhruv Yadav" /></label>
+        <label>Email address<input id="userEmail" type="email" required placeholder="you@example.com" /></label>
+        <div class="form-row"><label>Start time<input id="startTime" type="datetime-local" required /></label><label>End time<input id="endTime" type="datetime-local" required /></label></div>
+        <label>Purpose <select id="purpose"><option>Focused work</option><option>Team collaboration</option><option>Online meeting</option><option>Study</option></select></label>
+        <p class="form-message" id="formMessage"></p>
+        <button class="primary-btn full-btn" type="submit" id="confirmBooking">Confirm reservation</button>
+      </form>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
